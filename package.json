@@ -2,8 +2,9 @@
   "name": "e-gram-panchayat",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev": "node index.js"
+    "dev": "node src/index.js"
   },
   "author": "",
   "license": "ISC",
