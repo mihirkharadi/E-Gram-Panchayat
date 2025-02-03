@@ -2,6 +2,7 @@ import express from "express";
 import{login,signUp,forgotPassword} from '../controllers/userController.js';
 import authMiddleware from "../middlewares/authMiddleware.js";
 import { admin,getAdminProfile } from "../controllers/adminController.js";
+import { staff, getStaffProfile } from "../controllers/staffController.js";
 
 import User from '../models/user.js'
 
@@ -28,5 +29,9 @@ router.get('/profile',  authMiddleware,async (req, res) => {
 router.post('/admin-login', admin); 
 
 router.get('/admin-profile', authMiddleware, getAdminProfile);
+
+router.post('/staff-login' ,staff);
+
+router.get('/staff-profile',authMiddleware,getStaffProfile);
 
 export default router;
