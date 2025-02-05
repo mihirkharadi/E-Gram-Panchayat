@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { role, staffEmail,staffName,staffPassword,staffRole } from '../config/admin.js';
+import {   staffEmail,staffName,staffPassword,staffRole } from '../config/admin.js';
 
 
 export const staff=async(req,res)=>
@@ -32,10 +32,11 @@ export const staff=async(req,res)=>
             success:'true',
             message:'login successful',
             token:token,
+            role:staffRole,
             staff:{
                 name:staffName,
                 email:staffEmail,
-                role:role,
+                role:staffRole,
             },
         })
     }
@@ -56,7 +57,7 @@ export const getStaffProfile=async(req,res)=>
             staff:
             {
                 name:staffName,
-                role:role,
+                role:staffRole,
                  email:staffEmail,
             }
         })

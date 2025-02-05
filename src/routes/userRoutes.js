@@ -4,7 +4,7 @@ import authMiddleware from "../middlewares/authMiddleware.js";
 import { admin,getAdminProfile } from "../controllers/adminController.js";
 import { staff, getStaffProfile } from "../controllers/staffController.js";
 import { schemeAdd ,schemeAll ,schemeDelete } from "../controllers/schemeController.js";
-import { complaintAdd , complaintAll } from "../controllers/complaint.js";
+import { complaintAdd , complaintAll ,ComplaintResolve} from "../controllers/complaint.js";
 
 import User from '../models/user.js'
 
@@ -42,8 +42,10 @@ router.get('/scheme-all',schemeAll);
 
 router.delete('/delete/:id',schemeDelete);
 
-router.post('/complaint-add',complaintAdd);
+router.post('/complaint-add',authMiddleware,complaintAdd);
 
-router.get('/complaint-all',complaintAll);
+router.get('/complaint-all',authMiddleware,complaintAll);
+
+router.put('/complaints/:id/resolve',ComplaintResolve);
 
 export default router;

@@ -21,15 +21,18 @@ export const admin = async (req, res) => {
 
       
         const token = jwt.sign(
+           
             { email: adminEmail, role: role }, 
             process.env.JWT_SECRET,
             { expiresIn: '1d' }
         );
 
         return res.json({
+           
             success: true,
             message: 'Login successful',
             token: token,
+            role:role,
             admin: {
                 name: adminName,
                 role: role,

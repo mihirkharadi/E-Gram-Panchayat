@@ -1,11 +1,11 @@
-import Schemes from '../models/scheme.js'
+import Scheme from '../models/scheme.js'
 
 export const schemeAdd=async(req ,res)=>
 {
     try {
 
         const{id,name,reqDocuments,eligibility,lastDate}=req.body;
-        const scheme=new Schemes({
+        const scheme=new Scheme({
             id,name,reqDocuments,eligibility,lastDate
         })
         await scheme.save();
@@ -18,7 +18,7 @@ export const schemeAdd=async(req ,res)=>
 export const schemeAll=async(req,res)=>
 {
     try {
-        const schemes= await Schemes.find();
+        const schemes= await Scheme.find();
         res.status(200).json(schemes);
     } catch (error) {
         res.status(500).json({error:error.message})
@@ -28,7 +28,7 @@ export const schemeAll=async(req,res)=>
 export const schemeDelete=async(req,res)=>
 {
     try {
-        const schemeDel=await Schemes.findByIdAndDelete(req.params.id);
+        const schemeDel=await Scheme.findByIdAndDelete(req.params.id);
 
         if(!schemeDel) return res.status(404).json({
             message:'scheme not found'

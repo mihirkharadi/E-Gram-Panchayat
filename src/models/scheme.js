@@ -36,5 +36,5 @@ const schemeSchema=new mongoose.Schema({
 
 },{timestamps:true});
 
-export default mongoose.model('Schemes',schemeSchema);
+export default mongoose.model('Scheme',schemeSchema);
 
