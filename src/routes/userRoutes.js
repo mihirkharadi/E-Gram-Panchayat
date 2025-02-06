@@ -5,6 +5,7 @@ import { admin,getAdminProfile } from "../controllers/adminController.js";
 import { staff, getStaffProfile } from "../controllers/staffController.js";
 import { schemeAdd ,schemeAll ,schemeDelete } from "../controllers/schemeController.js";
 import { complaintAdd , complaintAll ,ComplaintResolve} from "../controllers/complaint.js";
+import { recordAdd,recordAll ,recordDelete } from "../controllers/recordController.js";
 
 import User from '../models/user.js'
 
@@ -47,5 +48,11 @@ router.post('/complaint-add',authMiddleware,complaintAdd);
 router.get('/complaint-all',authMiddleware,complaintAll);
 
 router.put('/complaints/:id/resolve',ComplaintResolve);
+
+router.post('/record-add',authMiddleware,recordAdd);
+
+router.get('/record-all',authMiddleware,recordAll);
+
+router.delete('/record-delete/:id',authMiddleware,recordDelete);
 
 export default router;

@@ -45,7 +45,7 @@ export const complaintAll=async(req,res)=>
            
             const userId = new mongoose.Types.ObjectId(req.user.id);
         const complaintDetails=await Complaint.find({ userId}) ;
-        console.log("complaints found:",complaintDetails);
+        
         
         res.status(200).json(complaintDetails);
         }
