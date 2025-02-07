@@ -1,12 +1,17 @@
 
+
 import Application from "../models/application.js"
 import {uploadMultipleImages} from '../utils/cloudinary.js'
+import mongoose from "mongoose";
 
 export const userApplication=async(req,res)=>
 {
     try {
-        const{email,address,name,phone,pinCode}=req.body;
-
+        const{email,address,name,phone,pinCode,status}=req.body;
+        const userId=req.user.id;
+ if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ error: 'Invalid User ID' });
+    }
         const uploadedImages=await uploadMultipleImages(req.files,'documents');
        
        
@@ -21,11 +26,13 @@ export const userApplication=async(req,res)=>
 
 
         const newApplication=new Application({
+             userId: new mongoose.Types.ObjectId(userId),
             name,
             email,
             address,
             phone,
             pinCode,
+            status,
             documents:documentData,
 
         })
@@ -47,9 +54,83 @@ export const userApplication=async(req,res)=>
 
 export const getApplications = async (req, res) => {
     try {
-        const applications = await Application.find();
-        res.status(200).json(applications);
+        if (req.user.role!=='user') {
+            const applications = await Application.find();
+            res.status(200).json(applications);
+            
+        }
+       else
+       {
+        const userId=new mongoose.Types.ObjectId(req.user.id);
+        const userApplication=await Application.find({userId});
+         res.status(200).json(userApplication);
+        
+       }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
+export const staffVerify=async(req,res)=>
+{
+    try {
+
+
+
+        const {userId}=req.params;
+        const{status}=req.body;
+       
+        if (!["staff_verified", "rejected"].includes(status)) {
+            return res.status(400).json({ error: "Invalid status value" });
+          }
+        
+        const application = await Application.findOneAndUpdate(
+            { _id: userId, status: "pending" },
+            { status }, 
+            { new: true } 
+        );
+        
+  
+        
+        if (!application) return res.status(404).json({
+            error:"Application not found or status already verify"
+        }) ;
+   
+        
+        
+       
+        
+        
+        res.status(200).json({message:"Application Verified",application})
+        
+    } catch (error) {
+        res.status(500).json({error:error.message});
+    }
+   
+
+}
+export const adminVerify=async (req,res) => {
+
+    try {
+        
+        const {userId}=req.params;
+         
+        const application= await Application.findOneAndUpdate(
+            {   _id:userId, status:"staff_verified"},
+            { status:'officer_approved'},
+            {new:true}
+        );
+        
+        if (!application) return res.status(404).json({error:'application not found'}) ;
+         
+
+       
+        res.status(200).json({
+            message:"Application approved", application
+        })
+
+    } catch (error) {
+        res.status(500).json({error:error.message})
+    }
+    
+}
