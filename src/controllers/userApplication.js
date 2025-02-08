@@ -74,9 +74,6 @@ export const getApplications = async (req, res) => {
 export const staffVerify=async(req,res)=>
 {
     try {
-
-
-
         const {userId}=req.params;
         const{status}=req.body;
        
@@ -90,18 +87,11 @@ export const staffVerify=async(req,res)=>
             { new: true } 
         );
         
-  
-        
-        if (!application) return res.status(404).json({
+      if (!application) return res.status(404).json({
             error:"Application not found or status already verify"
         }) ;
    
-        
-        
-       
-        
-        
-        res.status(200).json({message:"Application Verified",application})
+         res.status(200).json({message:"Application Verified",application})
         
     } catch (error) {
         res.status(500).json({error:error.message});
@@ -115,13 +105,18 @@ export const adminVerify=async (req,res) => {
         
         const {userId}=req.params;
          
-        const application= await Application.findOneAndUpdate(
-            {   _id:userId, status:"staff_verified"},
-            { status:'officer_approved'},
-            {new:true}
-        );
+        const{status}=req.body;
+       
+        if (!["officer_approved", "rejected"].includes(status)) {
+            return res.status(400).json({ error: "Invalid status value" });
+          }
         
-        if (!application) return res.status(404).json({error:'application not found'}) ;
+        const application = await Application.findOneAndUpdate(
+            { _id: userId, status: "staff_verified" },
+            { status }, 
+            { new: true } 
+        );
+        if (!application) return res.status(404).json({error:'application not found or not verify by staff'}) ;
          
 
        
@@ -132,5 +127,74 @@ export const adminVerify=async (req,res) => {
     } catch (error) {
         res.status(500).json({error:error.message})
     }
+    
+}
+
+export const staffRejected=async (req,res) => {
+
+
+    try {
+        const{userId}=req.params;
+    const{status,remarks}=req.body;
+    if(remarks==="")
+    {
+        return res.status(400).json({error:"pls enter remarks "})
+    }
+    if (!["rejected"].includes(status)) {
+        return res.status(400).json({ error: "Invalid status value" });
+      }
+
+      
+    
+    const application = await Application.findOneAndUpdate(
+        { _id: userId, status: "pending",remarks:"Nothing" },
+        { status ,remarks}, 
+        { new: true } 
+    );
+    if (!application) return res.status(404).json({error:'application not found '}) ;
+    res.status(200).json({
+        message:"Application rejected", application
+    })
+
+    } catch (error) {
+        res.status(500).json({error:error.message})
+    }
+    
+
+
+    
+}
+export const adminRejected=async (req,res) => {
+
+
+    try {
+        const{userId}=req.params;
+    const{status,remarks}=req.body;
+    if(remarks==="")
+    {
+        return res.status(400).json({error:"pls enter remarks "})
+    }
+    if (!["rejected"].includes(status)) {
+        return res.status(400).json({ error: "Invalid status value" });
+      }
+
+      
+    
+    const application = await Application.findOneAndUpdate(
+        { _id: userId, status: "staff_verified",remarks:"Nothing" },
+        { status ,remarks}, 
+        { new: true } 
+    );
+    if (!application) return res.status(404).json({error:'application not found '}) ;
+    res.status(200).json({
+        message:"Application rejected", application
+    })
+
+    } catch (error) {
+        res.status(500).json({error:error.message})
+    }
+    
+
+
     
 }

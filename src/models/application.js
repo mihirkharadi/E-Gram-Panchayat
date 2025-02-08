@@ -58,22 +58,25 @@ adminApprovedBy:
     ref:'User',
     default:adminName,
 },
-staffRemarks:
+remarks:
 {
     type:String,
     default:'Nothing',
 },
-adminRemarks:
+expiresAt:
 {
-    type:String,
-    default:"Nothing",
+    type: Date, default: null, index: { expires: 86400 }
 }
 
 
-
-
-
-
 },{timestamps:true})
+
+
+userSchemeAppSchema.pre("save", function (next) {
+    if (this.status === "officer_approved") {
+      this.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); 
+    }
+    next();
+  });
 
 export default mongoose.model('Application',userSchemeAppSchema);
